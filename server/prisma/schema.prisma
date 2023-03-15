@@ -1,0 +1,240 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Identity {
+  performer
+  client
+}
+
+enum Gender {
+  male
+  female
+  other
+}
+
+enum ClientType {
+  individual
+  corporate
+}
+
+enum Status {
+  completed
+  expired
+  valid
+  accepted
+}
+
+enum Properties {
+  public
+  private
+}
+
+enum TagType {
+  event
+  performer
+}
+
+enum ApplicationStatus {
+  pending
+  accept
+  reject
+}
+
+model User {
+  id         Int         @id @default(autoincrement())
+  uuid       String      @unique @default(uuid())
+  username   String      @db.VarChar(255)
+  password   String      @db.VarChar(255)
+  email      String      @unique
+  identity   Identity
+  icon       String?     @db.VarChar(255)
+  createdAt  DateTime    @default(now()) @map("create_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+  performers Performer[]
+  clients    Client[]
+  reviews    Review[]
+  visits     Visits[]
+
+  @@map("users")
+}
+
+model UserLike {
+  id           Int      @id @default(autoincrement())
+  subject_uuid String
+  target_uuid  String
+  createdAt    DateTime @default(now()) @map("create_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("user_like")
+}
+
+model Performer {
+  id                  Int                 @id @default(autoincrement())
+  users               User                @relation(fields: [users_id], references: [id])
+  users_id            Int
+  name                String?
+  years_of_exp        Int                 @default(0)
+  birthday            DateTime?           @db.Date
+  contact_number      Int
+  contact_email       String
+  gender              Gender              @default(other)
+  description         String?             @db.Text
+  twitter_url         String?             @db.VarChar(255)
+  facebook_url        String?             @db.VarChar(255)
+  ig_url              String?             @db.VarChar(255)
+  youtube_url         String?             @db.VarChar(255)
+  createdAt           DateTime            @default(now()) @map("create_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+  events              Event[]
+  performers_hashtags PerformersHashtag[]
+  events_applications EventsApplication[]
+  e_profile           Eprofile[]
+
+  @@map("performer")
+}
+
+model Eprofile {
+  id            Int       @id @default(autoincrement())
+  performers    Performer @relation(fields: [performers_id], references: [id])
+  performers_id Int
+  content       Json
+  createdAt     DateTime  @default(now()) @map("create_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@map("e_profile")
+}
+
+model Client {
+  id                   Int        @id @default(autoincrement())
+  users                User       @relation(fields: [users_id], references: [id])
+  users_id             Int        @map("user_id")
+  name                 String?    @db.VarChar(255)
+  gender               Gender     @default(other)
+  contact_number       Int
+  description          String?    @db.Text
+  contact_email        String?    @db.VarChar(255)
+  client_type          ClientType
+  business_address     String?    @db.VarChar(255)
+  business_BR_no       String?    @db.VarChar(255)
+  business_website_url String?    @db.VarChar(255)
+  createdAt            DateTime   @default(now()) @map("create_at")
+  updatedAt            DateTime   @updatedAt @map("updated_at")
+  events               Event[]
+
+  @@map("client")
+}
+
+model Review {
+  id               Int      @id @default(autoincrement())
+  events           Event    @relation(fields: [events_id], references: [id])
+  events_id        Int
+  users            User     @relation(fields: [users_id], references: [id])
+  users_id         Int
+  comments_content String?  @db.Text
+  score            Float
+  createdAt        DateTime @default(now()) @map("create_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("review")
+}
+
+model Event {
+  id                  Int                 @id @default(autoincrement())
+  performers          Performer?          @relation(fields: [performers_id], references: [id])
+  performers_id       Int?
+  clients             Client              @relation(fields: [clients_id], references: [id])
+  clients_id          Int
+  title               String
+  wage_offer          Decimal             @db.Decimal(8, 2)
+  start_date          DateTime?           @db.Date
+  end_date            DateTime?           @db.Date
+  rehearsal_needed    Boolean
+  start_time          DateTime?           @db.Time()
+  image               String?
+  end_time            DateTime?           @db.Time()
+  venue_image_name    String?             @db.VarChar(255)
+  description         String?             @db.Text
+  location            String              @db.VarChar(255)
+  status              Status              @default(valid)
+  properties          Properties          @default(public)
+  is_shown            Boolean             @default(true)
+  date_published      DateTime
+  createdAt           DateTime            @default(now()) @map("create_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+  reviews             Review[]
+  events_hashtags     EventsHashtag[]
+  events_applications EventsApplication[]
+
+  @@map("event")
+}
+
+model EventsHashtag {
+  id                 Int           @id @default(autoincrement())
+  events             Event         @relation(fields: [events_id], references: [id])
+  events_id          Int
+  hashtag_details    HashtagDetail @relation(fields: [hashtag_details_id], references: [id])
+  hashtag_details_id Int
+  createdAt          DateTime      @default(now()) @map("create_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+
+  @@map("events_hashtag")
+}
+
+model HashtagDetail {
+  id                  Int                 @id @default(autoincrement())
+  name                String?             @db.VarChar(255)
+  tag_type            TagType
+  createdAt           DateTime            @default(now()) @map("create_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+  events_hashtags     EventsHashtag[]
+  performers_hashtags PerformersHashtag[]
+
+  @@map("hashtag_detail")
+}
+
+model PerformersHashtag {
+  id                 Int           @id @default(autoincrement())
+  performers         Performer     @relation(fields: [performers_id], references: [id])
+  performers_id      Int
+  hashtag_details    HashtagDetail @relation(fields: [hashtag_details_id], references: [id])
+  hashtag_details_id Int
+  createdAt          DateTime      @default(now()) @map("create_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+
+  @@map("performers_hashtag")
+}
+
+model EventsApplication {
+  id            Int               @id @default(autoincrement())
+  events        Event             @relation(fields: [events_id], references: [id])
+  events_id     Int
+  performers    Performer         @relation(fields: [performers_id], references: [id])
+  performers_id Int
+  status        ApplicationStatus
+  createdAt     DateTime          @default(now()) @map("create_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+
+  @@unique([events_id, performers_id])
+  @@map("events_application")
+}
+
+model Visits {
+  id         Int      @id @default(autoincrement())
+  users      User     @relation(fields: [user_uuid], references: [uuid])
+  user_uuid  String
+  device     String?  @db.VarChar(255)
+  ip_address String?  @db.VarChar(255)
+  createdAt  DateTime @default(now()) @map("create_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("visits")
+}

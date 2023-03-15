@@ -1,0 +1,12 @@
+.SearchBox {
+	display: flex !important;
+	flex-direction: column !important;
+	flex-wrap: wrap !important;
+	justify-content: flex-end !important;
+	align-items: center !important;
+	gap: 5px !important;
+}
+
+.TagPicker {
+	width: 50px !important;
+}

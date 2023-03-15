@@ -1,0 +1,22 @@
+.navbar {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	background-color: #ffffff;
+	opacity: 0.95;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 60px;
+	margin: 0;
+	padding: 0;
+}
+
+.navIcon:hover {
+	float: left;
+	color: rgb(255 203 44);
+	/* text-shadow: 10px 10px 10px rgb(95, 76, 21); */
+	text-align: center;
+	text-decoration: none;
+}

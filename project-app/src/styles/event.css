@@ -1,0 +1,72 @@
+#EventHeader {
+	display: flex;
+	justify-content: space-between;
+}
+
+.event__detailPage__dateTime{
+	display: flex;
+    justify-content: center;
+}
+
+.event-detailPage-titleDescription {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-left: 3vw;
+  padding-right: 3vw;
+}
+
+.event-title-tag {
+  display: flex;
+}
+
+.mantine-17sxzhi{
+  flex-direction: column
+}
+
+.detail-Time{
+  display: flex;
+  justify-content: space-between;
+}
+
+.mantine-Group-root.event-detailPage-dateTime.mantine-17sxzhi {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  padding-left: 3vw;
+  padding-right: 3vw;
+  padding-bottom: 3vw;
+  border-top: 1px solid rgba(128, 128, 128, 0.283) ;
+}
+
+.Event_create_event_btn{
+  background-color: #000000;
+	padding: 1vh;
+	color: #FFFFFF;
+  text-transform: uppercase;
+	border-radius: 5px;
+}
+
+.eventDetailPage__Apply__btn{
+  background-color: #000000;
+	padding: 1vh;
+	color: #FFFFFF;
+  text-transform: uppercase;
+	border-radius: 5px;
+  width: 70%;
+}
+
+.EventInfo__Details_Btn{
+  background-color: #000000;
+	padding: 1vh;
+	color: #FFFFFF;
+  text-transform: uppercase;
+	border-radius: 5px;
+  width: 20vw;
+  gap: 5vw;
+}
+
+.events_createEvent_SubmitBtn{
+  background-color: #000000 !important;
+}
